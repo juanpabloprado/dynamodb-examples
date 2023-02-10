@@ -1,0 +1,14 @@
+micronaut:
+  application:
+    name: dynamodbExamples
+netty:
+  default:
+    allocator:
+      max-order: 3
+aws:
+  region: us-west-2
+  services:
+    dynamodb:
+      endpoint-override: http://localhost:8000
+dynamodb:
+  table-name: 'JavaBaseballStats'
