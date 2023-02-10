@@ -1,13 +1,14 @@
-package com.example;
+package com.example.domain;
 
+import com.example.CIAwsCredentialsProviderChainCondition;
+import com.example.CIAwsRegionProviderChainCondition;
+import com.example.DynamoConfiguration;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.annotation.NonNull;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
@@ -17,7 +18,6 @@ import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 
 import java.util.Arrays;
-import java.util.Map;
 
 @Requires(condition = CIAwsRegionProviderChainCondition.class)
 @Requires(condition = CIAwsCredentialsProviderChainCondition.class)

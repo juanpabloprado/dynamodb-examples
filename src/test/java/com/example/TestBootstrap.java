@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.domain.DynamoRepository;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.event.ApplicationEventListener;

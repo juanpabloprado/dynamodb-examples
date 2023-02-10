@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.domain;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.serde.annotation.Serdeable;
@@ -44,4 +44,14 @@ public class Game extends BaseEntity {
         return opposingTeamRuns;
     }
 
+    @Override
+    public String toString() {
+        return "Game{" +
+                "teamId='" + getId() + '\'' +
+                ", sk='" + getSK() + '\'' +
+                ", runs=" + runs +
+                ", opposingTeamId='" + opposingTeamId + '\'' +
+                ", opposingTeamRuns=" + opposingTeamRuns +
+                '}';
+    }
 }

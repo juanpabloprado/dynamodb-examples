@@ -1,6 +1,6 @@
-package com.example;
+package com.example.domain;
 
-import com.example.model.Player;
+import com.example.DynamoConfiguration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -15,8 +15,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.example.DynamoRepository.ATTRIBUTE_PK;
-import static com.example.DynamoRepository.ATTRIBUTE_SK;
+import static com.example.domain.DynamoRepository.ATTRIBUTE_PK;
+import static com.example.domain.DynamoRepository.ATTRIBUTE_SK;
 
 @Singleton
 public class InsertPlayer extends ItemRepository<Player> {

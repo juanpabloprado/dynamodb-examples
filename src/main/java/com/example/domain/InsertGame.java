@@ -1,6 +1,6 @@
-package com.example;
+package com.example.domain;
 
-import com.example.model.Game;
+import com.example.DynamoConfiguration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -15,15 +15,15 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.example.DynamoRepository.ATTRIBUTE_PK;
-import static com.example.DynamoRepository.ATTRIBUTE_SK;
+import static com.example.domain.DefaultGameRepository.OPPOSING_TEAM_ID;
+import static com.example.domain.DefaultGameRepository.OPPOSING_TEAM_RUNS;
+import static com.example.domain.DefaultGameRepository.RUNS;
+import static com.example.domain.DynamoRepository.ATTRIBUTE_PK;
+import static com.example.domain.DynamoRepository.ATTRIBUTE_SK;
 
 @Singleton
 public class InsertGame extends ItemRepository<Game> {
     private static final Logger LOG = LoggerFactory.getLogger(InsertGame.class);
-    public static final String RUNS = "Runs";
-    public static final String OPPOSING_TEAM_ID = "OpposingTeamID";
-    public static final String OPPOSING_TEAM_RUNS = "OpposingTeamRuns";
     private final ObjectMapper mapper;
 
     public InsertGame(ObjectMapper mapper, DynamoDbClient client, DynamoConfiguration dynamoConfiguration) {

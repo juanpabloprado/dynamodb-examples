@@ -1,6 +1,6 @@
-package com.example;
+package com.example.domain;
 
-import com.example.model.BaseEntity;
+import com.example.DynamoConfiguration;
 import io.micronaut.core.annotation.NonNull;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.DynamoRepository.ATTRIBUTE_PK;
-import static com.example.DynamoRepository.ATTRIBUTE_SK;
+import static com.example.domain.DynamoRepository.ATTRIBUTE_PK;
+import static com.example.domain.DynamoRepository.ATTRIBUTE_SK;
 
 @Singleton
 public class ItemRepository<T extends BaseEntity> {
@@ -46,4 +46,13 @@ public class ItemRepository<T extends BaseEntity> {
             LOG.debug(itemResponse.toString());
         }
     }
+
+//    protected Optional<Map<String, AttributeValue>> findById(@NonNull @NotBlank String id) {
+//        AttributeValue pk = id(cls, id);
+//        GetItemResponse getItemResponse = dynamoDbClient.getItem(GetItemRequest.builder()
+//                .tableName(dynamoConfiguration.getTableName())
+//                .key(CollectionUtils.mapOf(ATTRIBUTE_PK, pk, ATTRIBUTE_SK, pk))
+//                .build());
+//        return !getItemResponse.hasItem() ? Optional.empty() : Optional.of(getItemResponse.item());
+//    }
 }

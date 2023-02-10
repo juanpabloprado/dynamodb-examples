@@ -10,7 +10,8 @@
         </encoder>
     </appender>
 
-    <logger name="com.example.ItemRepository" level="DEBUG"/>
+    <logger name="com.example.domain.ItemRepository" level="DEBUG"/>
+    <logger name="com.example.domain.DefaultGameRepository" level="TRACE"/>
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
