@@ -10,9 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -27,16 +24,11 @@ public class InsertGame extends ItemRepository<Game> {
     public static final String RUNS = "Runs";
     public static final String OPPOSING_TEAM_ID = "OpposingTeamID";
     public static final String OPPOSING_TEAM_RUNS = "OpposingTeamRuns";
-    private final DynamoDbClient client;
     private final ObjectMapper mapper;
 
-    private final DynamoConfiguration dynamoConfiguration;
-
-
     public InsertGame(ObjectMapper mapper, DynamoDbClient client, DynamoConfiguration dynamoConfiguration) {
+        super(client, dynamoConfiguration);
         this.mapper = mapper;
-        this.client = client;
-        this.dynamoConfiguration = dynamoConfiguration;
     }
 
     public void createItems() {
@@ -58,7 +50,7 @@ public class InsertGame extends ItemRepository<Game> {
                 String opposingTeamIdVal = currentNode.path(OPPOSING_TEAM_ID).path("S").asText();
                 int opposingTeamRunsVal = currentNode.path(OPPOSING_TEAM_RUNS).path("N").asInt();
 
-                putItem(new Game(teamIdVal, skValue, runsVal, opposingTeamIdVal, opposingTeamRunsVal));
+                save(new Game(teamIdVal, skValue, runsVal, opposingTeamIdVal, opposingTeamRunsVal));
                 LOG.info(dynamoConfiguration.getTableName() + " was successfully updated");
             }
 
@@ -80,22 +72,8 @@ public class InsertGame extends ItemRepository<Game> {
     }
 
 
-    private void putItem(Game game) {
-        PutItemRequest request = PutItemRequest.builder()
-                .tableName(dynamoConfiguration.getTableName())
-                .item(item(game))
-                .build();
-
-        try {
-            client.putItem(request);
-
-        } catch (ResourceNotFoundException e) {
-            System.err.format("Error: The Amazon DynamoDB table \"%s\" can't be found.\n", dynamoConfiguration.getTableName());
-            System.err.println("Be sure that it exists and that you've typed its name correctly!");
-            System.exit(1);
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+    @Override
+    protected void save(Game entity) {
+        super.save(entity);
     }
 }
