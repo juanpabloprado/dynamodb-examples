@@ -3,8 +3,6 @@ package com.example.domain;
 import com.example.DynamoConfiguration;
 import io.micronaut.core.annotation.NonNull;
 import jakarta.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
@@ -19,7 +17,6 @@ import java.util.Optional;
 
 @Singleton
 public class EnhancedGameRepository extends EnhancedItemRepository<Game> {
-    private static final Logger LOG = LoggerFactory.getLogger(EnhancedGameRepository.class);
     private final DynamoDbTable<Game> gameTable;
 
     public EnhancedGameRepository(DynamoDbEnhancedClient dynamoDbEnhancedClient, DynamoConfiguration dynamoConfiguration) {
@@ -31,10 +28,9 @@ public class EnhancedGameRepository extends EnhancedItemRepository<Game> {
         gameTable.putItem(PutItemEnhancedRequest.builder(Game.class).item(game).build());
     }
 
-    public Optional<Game> findByTeamIdAndDate(@NonNull String teamId, @NonNull String date) {
+    public Game findByTeamIdAndDate(@NonNull String teamId, @NonNull String date) {
         Key key = Key.builder().partitionValue("GAMES_" + teamId).sortValue(date).build();
-        Game game = gameTable.getItem((GetItemEnhancedRequest.Builder requestBuilder) -> requestBuilder.key(key));
-        return Optional.of(game);
+        return gameTable.getItem((GetItemEnhancedRequest.Builder requestBuilder) -> requestBuilder.key(key));
     }
 
     public Optional<Game> deleteByTeamIdAndDate(@NonNull String teamId, @NonNull String date) {
