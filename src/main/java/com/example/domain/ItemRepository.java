@@ -19,7 +19,7 @@ import static com.example.domain.DynamoRepository.ATTRIBUTE_PK;
 import static com.example.domain.DynamoRepository.ATTRIBUTE_SK;
 
 @Singleton
-public class ItemRepository<T extends BaseEntity> {
+public class ItemRepository<T extends GenericEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(ItemRepository.class);
     protected final DynamoDbClient dynamoDbClient;
     protected final DynamoConfiguration dynamoConfiguration;
@@ -33,7 +33,7 @@ public class ItemRepository<T extends BaseEntity> {
     protected Map<String, AttributeValue> item(@NonNull T entity) {
         Map<String, AttributeValue> item = new HashMap<>();
         item.put(ATTRIBUTE_PK, AttributeValue.builder().s(entity.getId()).build());
-        item.put(ATTRIBUTE_SK, AttributeValue.builder().s(entity.getSK()).build());
+        item.put(ATTRIBUTE_SK, AttributeValue.builder().s(entity.getSk()).build());
         return item;
     }
 
@@ -46,13 +46,4 @@ public class ItemRepository<T extends BaseEntity> {
             LOG.debug(itemResponse.toString());
         }
     }
-
-//    protected Optional<Map<String, AttributeValue>> findById(@NonNull @NotBlank String id) {
-//        AttributeValue pk = id(cls, id);
-//        GetItemResponse getItemResponse = dynamoDbClient.getItem(GetItemRequest.builder()
-//                .tableName(dynamoConfiguration.getTableName())
-//                .key(CollectionUtils.mapOf(ATTRIBUTE_PK, pk, ATTRIBUTE_SK, pk))
-//                .build());
-//        return !getItemResponse.hasItem() ? Optional.empty() : Optional.of(getItemResponse.item());
-//    }
 }

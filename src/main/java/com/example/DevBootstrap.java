@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.domain.DefaultGameRepository;
 import com.example.domain.DynamoRepository;
+import com.example.domain.EnhancedGameRepository;
 import com.example.domain.Game;
 import com.example.domain.InsertGame;
 import com.example.domain.InsertPlayer;
@@ -14,6 +15,7 @@ import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Requires(env = Environment.DEVELOPMENT)
@@ -26,13 +28,15 @@ public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
     private final InsertTeam insertTeam;
 
     private final DefaultGameRepository gameRepository;
+    private final EnhancedGameRepository enhancedGameRepository;
 
-    public DevBootstrap(DynamoRepository dynamoRepository, InsertGame insertGame, InsertPlayer insertPlayer, InsertTeam insertTeam, DefaultGameRepository gameRepository) {
+    public DevBootstrap(DynamoRepository dynamoRepository, InsertGame insertGame, InsertPlayer insertPlayer, InsertTeam insertTeam, DefaultGameRepository gameRepository, EnhancedGameRepository enhancedGameRepository) {
         this.dynamoRepository = dynamoRepository;
         this.insertGame = insertGame;
         this.insertPlayer = insertPlayer;
         this.insertTeam = insertTeam;
         this.gameRepository = gameRepository;
+        this.enhancedGameRepository = enhancedGameRepository;
     }
 
     @Override
@@ -49,5 +53,13 @@ public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
         LOG.info(games.toString());
         List<Game> games2 = gameRepository.findAllByTeamIdAndBetweenDate("LAA", "20190401", "20190501", "SEA");
         LOG.info(games2.toString());
+
+
+        Iterator<Game> results = enhancedGameRepository.findAll();
+        while (results.hasNext()) {
+            Game rec = results.next();
+            System.out.println("The record id is " + rec.getId());
+            System.out.println("The game is " + rec);
+        }
     }
 }

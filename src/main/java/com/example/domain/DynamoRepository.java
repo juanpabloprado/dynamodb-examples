@@ -7,6 +7,7 @@ import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.StaticTableSchema;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
 import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
@@ -19,6 +20,8 @@ import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 
 import java.util.Arrays;
 
+import static software.amazon.awssdk.enhanced.dynamodb.mapper.StaticAttributeTags.primaryPartitionKey;
+
 @Requires(condition = CIAwsRegionProviderChainCondition.class)
 @Requires(condition = CIAwsCredentialsProviderChainCondition.class)
 @Requires(beans = {DynamoConfiguration.class, DynamoDbClient.class})
@@ -27,6 +30,18 @@ public class DynamoRepository {
     private static final Logger LOG = LoggerFactory.getLogger(DynamoRepository.class);
     protected static final String ATTRIBUTE_PK = "TeamID";
     protected static final String ATTRIBUTE_SK = "SK";
+
+    protected static final StaticTableSchema<GenericEntity> GENERIC_RECORD_SCHEMA =
+            StaticTableSchema.builder(GenericEntity.class)
+                    // The partition key will be inherited by the top level mapper
+                    .addAttribute(String.class, a -> a.name(ATTRIBUTE_PK)
+                            .getter(GenericEntity::getId)
+                            .setter(GenericEntity::setTeamId)
+                            .tags(primaryPartitionKey()))
+                    .addAttribute(String.class, a -> a.name(ATTRIBUTE_SK)
+                            .getter(GenericEntity::getSk)
+                            .setter(GenericEntity::setSk))
+                    .build();
     private final DynamoDbClient dynamoDbClient;
     private final DynamoConfiguration dynamoConfiguration;
 
