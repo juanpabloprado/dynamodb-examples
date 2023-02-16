@@ -24,7 +24,7 @@ public class EnhancedGameRepository extends EnhancedItemRepository<Game> {
 
     public EnhancedGameRepository(DynamoDbEnhancedClient dynamoDbEnhancedClient, DynamoConfiguration dynamoConfiguration) {
         super(dynamoDbEnhancedClient, dynamoConfiguration);
-        gameTable = this.dynamoDbEnhancedClient.table(dynamoConfiguration.getTableName(), Game.GAME_TABLE_SCHEMA);
+        gameTable = dynamoDbEnhancedClient.table(dynamoConfiguration.getTableName(), Game.GAME_TABLE_SCHEMA);
     }
 
     protected void save(@NonNull @NotNull @Valid Game game) {
@@ -32,13 +32,13 @@ public class EnhancedGameRepository extends EnhancedItemRepository<Game> {
     }
 
     public Optional<Game> findByTeamIdAndDate(@NonNull String teamId, @NonNull String date) {
-        Key key = Key.builder().partitionValue(teamId).sortValue(date).build();
+        Key key = Key.builder().partitionValue("GAMES_" + teamId).sortValue(date).build();
         Game game = gameTable.getItem((GetItemEnhancedRequest.Builder requestBuilder) -> requestBuilder.key(key));
         return Optional.of(game);
     }
 
     public Optional<Game> deleteByTeamIdAndDate(@NonNull String teamId, @NonNull String date) {
-        Key key = Key.builder().partitionValue(teamId).sortValue(date).build();
+        Key key = Key.builder().partitionValue("GAMES_" + teamId).sortValue(date).build();
         Game previouslyPersistedGame = gameTable.deleteItem(DeleteItemEnhancedRequest.builder().key(key).build());
         return Optional.of(previouslyPersistedGame);
     }

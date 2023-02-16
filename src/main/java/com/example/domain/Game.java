@@ -28,7 +28,6 @@ public class Game extends GenericEntity {
                             .setter(Game::setOpposingTeamRuns))
                     .extend(GENERIC_RECORD_SCHEMA)
                     .build();
-    private GenericEntity genericEntity;
     private Integer runs;
 
     @NotBlank

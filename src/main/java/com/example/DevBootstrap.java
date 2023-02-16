@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Requires(env = Environment.DEVELOPMENT)
 @Singleton
@@ -61,5 +62,8 @@ public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
             System.out.println("The record id is " + rec.getId());
             System.out.println("The game is " + rec);
         }
+
+        Optional<Game> laa = enhancedGameRepository.findByTeamIdAndDate("LAA", "20190420");
+        System.out.println(laa);
     }
 }

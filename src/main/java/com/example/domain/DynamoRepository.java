@@ -21,6 +21,7 @@ import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
 import java.util.Arrays;
 
 import static software.amazon.awssdk.enhanced.dynamodb.mapper.StaticAttributeTags.primaryPartitionKey;
+import static software.amazon.awssdk.enhanced.dynamodb.mapper.StaticAttributeTags.primarySortKey;
 
 @Requires(condition = CIAwsRegionProviderChainCondition.class)
 @Requires(condition = CIAwsCredentialsProviderChainCondition.class)
@@ -33,14 +34,14 @@ public class DynamoRepository {
 
     protected static final StaticTableSchema<GenericEntity> GENERIC_RECORD_SCHEMA =
             StaticTableSchema.builder(GenericEntity.class)
-                    // The partition key will be inherited by the top level mapper
                     .addAttribute(String.class, a -> a.name(ATTRIBUTE_PK)
                             .getter(GenericEntity::getId)
                             .setter(GenericEntity::setTeamId)
                             .tags(primaryPartitionKey()))
                     .addAttribute(String.class, a -> a.name(ATTRIBUTE_SK)
                             .getter(GenericEntity::getSk)
-                            .setter(GenericEntity::setSk))
+                            .setter(GenericEntity::setSk)
+                            .tags(primarySortKey()))
                     .build();
     private final DynamoDbClient dynamoDbClient;
     private final DynamoConfiguration dynamoConfiguration;

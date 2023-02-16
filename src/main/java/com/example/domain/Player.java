@@ -24,7 +24,6 @@ public class Player extends GenericEntity {
                             .setter(Player::setPosition))
                     .extend(GENERIC_RECORD_SCHEMA)
                     .build();
-    private GenericEntity genericEntity;
     @NotBlank
     private String playerName;
 

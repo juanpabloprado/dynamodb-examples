@@ -21,7 +21,6 @@ public class Team extends GenericEntity {
                             .setter(Team::setTeamName))
                     .extend(GENERIC_RECORD_SCHEMA)
                     .build();
-    private GenericEntity genericEntity;
     @NotBlank
     private String teamName;
 
@@ -37,14 +36,6 @@ public class Team extends GenericEntity {
     @DynamoDbAttribute("TeamName")
     public String getTeamName() {
         return teamName;
-    }
-
-    public GenericEntity getGenericEntity() {
-        return genericEntity;
-    }
-
-    public void setGenericEntity(GenericEntity genericEntity) {
-        this.genericEntity = genericEntity;
     }
 
     public void setTeamName(String teamName) {
