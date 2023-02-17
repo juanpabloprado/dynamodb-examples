@@ -8,7 +8,10 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.model.DeleteItemEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PutItemEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,7 +27,7 @@ public class EnhancedGameRepository extends EnhancedItemRepository<Game> {
         gameTable = dynamoDbEnhancedClient.table(dynamoConfiguration.getTableName(), Game.GAME_TABLE_SCHEMA);
     }
 
-    protected void save(@NonNull @NotNull @Valid Game game) {
+    public void save(@NonNull @NotNull @Valid Game game) {
         gameTable.putItem(PutItemEnhancedRequest.builder(Game.class).item(game).build());
     }
 
@@ -41,6 +44,18 @@ public class EnhancedGameRepository extends EnhancedItemRepository<Game> {
 
     public Iterator<Game> findAll() {
         return gameTable.scan().items().iterator();
+    }
+
+    public Iterator<Page<Game>> findAllByTeamId(@NonNull String teamId) {
+
+        QueryConditional queryConditional = QueryConditional
+                .keyEqualTo(Key.builder().partitionValue("GAMES_" + teamId)
+                        .build());
+
+        return gameTable.query((QueryEnhancedRequest.Builder requestBuilder) ->
+                        requestBuilder.queryConditional(queryConditional)
+                                .scanIndexForward(false))
+                .iterator();
     }
 
 }

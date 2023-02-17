@@ -14,9 +14,11 @@ import io.micronaut.context.event.StartupEvent;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Requires(env = Environment.DEVELOPMENT)
 @Singleton
@@ -64,5 +66,12 @@ public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
 
         Game laa = enhancedGameRepository.findByTeamIdAndDate("LAA", "20190420");
         LOG.info(laa + "");
+
+        Optional<Game> deletedGame = enhancedGameRepository.deleteByTeamIdAndDate("LAA", "20190420");
+        LOG.info(deletedGame + "");
+
+        Iterator<Page<Game>> laaGames = enhancedGameRepository.findAllByTeamId("LAA");
+        laaGames.forEachRemaining(gamePage -> LOG.info(gamePage + "") );
+        deletedGame.ifPresent(enhancedGameRepository::save);
     }
 }
