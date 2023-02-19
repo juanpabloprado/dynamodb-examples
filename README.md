@@ -24,9 +24,7 @@ To run the tests:
 ./gradlew test
 ```
 ```bash
-# Then
 open build/reports/tests/test/index.html
-# in a browser to see the results.
 ```
 
 ---
