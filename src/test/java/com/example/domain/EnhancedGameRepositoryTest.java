@@ -22,11 +22,11 @@ class EnhancedGameRepositoryTest {
     void save() {
         Game game = new Game("GAMES_LAA", "20230420", 12, "SEA", 7);
         gameRepository.save(game);
-        Iterator<Game> books = gameRepository.findAll();
-        List<Game> games = List.of(books.next());
+        Iterator<Game> gameIterator = gameRepository.findAll();
+        List<Game> games = List.of(gameIterator.next());
         assertEquals("GAMES_LAA", games.get(0).getId());
         assertEquals("20230420", games.get(0).getSk());
-        assertFalse(books.hasNext());
+        assertFalse(gameIterator.hasNext());
     }
 
 }
