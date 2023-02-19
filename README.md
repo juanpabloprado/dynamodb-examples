@@ -1,4 +1,4 @@
-## Micronaut test resources demo
+## Micronaut test resources DynamoDB
 
 Run `./gradlew -t run` or `./gradlew test` to spawn a test container for DynamoDB when running the app or launching tests using Testcontainers
 
