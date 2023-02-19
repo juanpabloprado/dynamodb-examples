@@ -9,6 +9,14 @@ aws:
   region: us-west-2
   services:
     dynamodb:
-      endpoint-override: http://localhost:8000
+      endpoint-override: dynamodb-local.host:8000
 dynamodb:
   table-name: 'JavaBaseballStats'
+test-resources:
+  containers:
+    dynamodb:
+      image-name: amazon/dynamodb-local:1.21.0
+      hostnames:
+        - dynamodb-local.host
+      exposed-ports:
+        - dynamodb-local.port: 8000

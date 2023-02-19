@@ -1,9 +1,22 @@
-## Micronaut 3.8.4 Documentation
+## Micronaut test resources demo
 
-- [User Guide](https://docs.micronaut.io/3.8.4/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.8.4/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.8.4/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
+Run `./gradlew -t run` or `./gradlew test` to spawn a test container for DynamoDB when running the app or launching tests using Testcontainers
+
+### A bit more context
+
+If you run `./gradlew test` or `./gradlew run`, a test container will be spawned, and shutdown at the end of the build.
+
+If you run with `./gradlew -t test`, then the container will only be stopped at the end of the whole build session, which means that you can make changes to your code and reuse containers without paying the startup price.
+
+Last but not least, you can also start the test resources server separately, making it possible to reuse it in independent builds:
+
+- `./gradlew startTestResourcesService` : starts the test resources server
+- `./gradlew run`: uses the test resources
+- `./gradlew test`: uses the same test resources
+- `./gradlew stopTestResourcesService`: stops the test resources server
+
+Please read the [snapshot documentation](https://micronaut-projects.github.io/micronaut-gradle-plugin/snapshot/#test-resources) for all the possible configuration options.
+
 
 ---
 

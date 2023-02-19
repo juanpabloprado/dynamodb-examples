@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+@Requires(property = "dynamodb-local.host")
+@Requires(property = "dynamodb-local.port")
 @Requires(env = Environment.DEVELOPMENT)
 @Singleton
 public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
