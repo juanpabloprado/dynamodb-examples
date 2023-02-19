@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Test;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @MicronautTest
 class EnhancedGameRepositoryTest {
 
     @Inject
     EnhancedGameRepository gameRepository;
+
     @Test
     @DisplayName("A DynamoDB test container is required to run this test")
     void save() {
