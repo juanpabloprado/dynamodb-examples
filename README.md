@@ -17,6 +17,17 @@ Last but not least, you can also start the test resources server separately, mak
 
 Please read the [snapshot documentation](https://micronaut-projects.github.io/micronaut-gradle-plugin/snapshot/#test-resources) for all the possible configuration options.
 
+### Testing the Application
+
+To run the tests:
+```bash
+./gradlew test
+```
+```bash
+# Then
+open build/reports/tests/test/index.html
+# in a browser to see the results.
+```
 
 ---
 
