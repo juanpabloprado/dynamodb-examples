@@ -21,8 +21,6 @@ public class TestBootstrap implements ApplicationEventListener<StartupEvent> {
 
     @Override
     public void onApplicationEvent(StartupEvent event) {
-        if (!dynamoRepository.existsTable()) {
-            dynamoRepository.createTable();
-        }
+        dynamoRepository.createTableIfNotExist();
     }
 }

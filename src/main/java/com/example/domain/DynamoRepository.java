@@ -7,16 +7,20 @@ import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.core.waiters.WaiterResponse;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.StaticTableSchema;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
 import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
+import software.amazon.awssdk.services.dynamodb.model.CreateTableResponse;
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest;
+import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse;
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
 import software.amazon.awssdk.services.dynamodb.model.KeyType;
 import software.amazon.awssdk.services.dynamodb.model.ProvisionedThroughput;
 import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
+import software.amazon.awssdk.services.dynamodb.waiters.DynamoDbWaiter;
 
 import java.util.Arrays;
 
@@ -52,19 +56,29 @@ public class DynamoRepository {
         this.dynamoConfiguration = dynamoConfiguration;
     }
 
-    public boolean existsTable() {
+    public void createTableIfNotExist() {
+        String tableName = dynamoConfiguration.getTableName();
+
+        if (notExists(tableName)) {
+            createTable(tableName);
+        }
+
+    }
+
+    private boolean notExists(String tableName) {
         try {
             dynamoDbClient.describeTable(DescribeTableRequest.builder()
-                    .tableName(dynamoConfiguration.getTableName())
+                    .tableName(tableName)
                     .build());
-            return true;
-        } catch (ResourceNotFoundException e) {
             return false;
+        } catch (ResourceNotFoundException e) {
+            return true;
         }
     }
 
-    public void createTable() {
-        dynamoDbClient.createTable(CreateTableRequest.builder()
+    private void createTable(String tableName) {
+        DynamoDbWaiter dbWaiter = dynamoDbClient.waiter();
+        CreateTableRequest request = CreateTableRequest.builder()
                 .keySchema(Arrays.asList(KeySchemaElement.builder()
                                 .attributeName(ATTRIBUTE_PK)
                                 .keyType(KeyType.HASH)
@@ -85,9 +99,18 @@ public class DynamoRepository {
                         .readCapacityUnits(5L)
                         .writeCapacityUnits(5L)
                         .build())
-                .tableName(dynamoConfiguration.getTableName())
-                .build());
-        LOG.info("Table created!");
+                .tableName(tableName)
+                .build();
+
+        CreateTableResponse response = dynamoDbClient.createTable(request);
+
+        DescribeTableRequest tableRequest = DescribeTableRequest.builder()
+                .tableName(tableName)
+                .build();
+
+        dbWaiter.waitUntilTableExists(tableRequest);
+        WaiterResponse<DescribeTableResponse> waiterResponse = dbWaiter.waitUntilTableExists(tableRequest);
+        waiterResponse.matched().response().ifPresent(res -> LOG.info("Table {} created", response.tableDescription().tableName()));
     }
 
 }

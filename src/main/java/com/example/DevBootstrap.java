@@ -45,12 +45,12 @@ public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
 
     @Override
     public void onApplicationEvent(StartupEvent event) {
-        if (!dynamoRepository.existsTable()) {
-            dynamoRepository.createTable();
-            insertGame.createItems();
-            insertPlayer.createItems();
-            insertTeam.createItems();
-        }
+
+        dynamoRepository.createTableIfNotExist();
+        insertGame.createItems();
+        insertPlayer.createItems();
+        insertTeam.createItems();
+
         List<Game> game = gameRepository.findAllByTeamIdAndDate("LAA", "20190420");
         LOG.info(game.toString());
         List<Game> games = gameRepository.findAllByTeamIdAndBetweenDate("LAA", "20190401", "20190501");
@@ -67,13 +67,13 @@ public class DevBootstrap implements ApplicationEventListener<StartupEvent> {
         }
 
         Game laa = enhancedGameRepository.findByTeamIdAndDate("LAA", "20190420");
-        LOG.info(laa + "");
+        LOG.info(String.valueOf(laa));
 
         Optional<Game> deletedGame = enhancedGameRepository.deleteByTeamIdAndDate("LAA", "20190420");
-        LOG.info(deletedGame + "");
+        LOG.info(String.valueOf(deletedGame));
 
         Iterator<Page<Game>> laaGames = enhancedGameRepository.findAllByTeamId("LAA");
-        laaGames.forEachRemaining(gamePage -> LOG.info(gamePage + "") );
+        laaGames.forEachRemaining(gamePage -> LOG.info(String.valueOf(gamePage)) );
         deletedGame.ifPresent(enhancedGameRepository::save);
     }
 }
